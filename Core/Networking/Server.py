@@ -16,33 +16,18 @@ class Server:
     def __init__(self, ip: str, port: int):
         self.config = json.loads(open('config.json', 'r').read())
         self.server = socket.socket()
+        self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.port = port
         self.ip = ip
 
     def start(self):
         self.server.bind((self.ip, self.port))
-
-        # Start matchmaking background loop
         MatchmakingManager.start_loop()
-        _(f'{Helpers.green}[*] Matchmaking loop started!')
-        _(f'{Helpers.green}[*] Server started! Listening on {self.ip}:{self.port}')
+        _(f'{Helpers.green}[*] Project_Magnet server started on {self.ip}:{self.port}')
 
         while True:
             self.server.listen()
             client, address = self.server.accept()
-
-            _(f'{Helpers.green}[*] Client connected! IP: {address[0]}')
-
+            _(f'{Helpers.green}[*] Client connected: {address[0]}')
             ClientThread(client, address).start()
-
-            Helpers.connected_clients['ClientsCount'] += 1
-
-        while True:
-            self.server.listen()
-            client, address = self.server.accept()
-
-            _(f'{Helpers.green}[*] Client connected! IP: {address[0]}')
-
-            ClientThread(client, address).start()
-
             Helpers.connected_clients['ClientsCount'] += 1
