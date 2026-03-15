@@ -1,4 +1,4 @@
-using BSL.v41.Logic.Environment.LaserMessage.Sepo.Home.Laser.Laser;
+using BSL.v41.Logic.Config;
 using BSL.v41.Titan.Graphic;
 using System.Net.Http;
 using System.Text;

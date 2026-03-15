@@ -2,6 +2,8 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 COPY . .
 RUN dotnet publish BSL.v41.General/BSL.v41.General.csproj -c Release -o /out
+RUN cp brawlpass.json /out/brawlpass.json || true
+RUN cp shop.json /out/shop.json || true
 
 FROM mcr.microsoft.com/dotnet/runtime:8.0
 WORKDIR /app
