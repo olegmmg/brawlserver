@@ -25,7 +25,7 @@ public class EndClientTurnMessage : PiranhaMessage
 
         for (var i = 0; i < commands; i++)
         {
-            var command = LogicCommandManager.DecodeCommand(ByteStream);
+            var command = BSL.v41.Logic.Logic.LogicCommandManager.DecodeCommand(ByteStream);
             {
                 if (command != null) _logicCommands.Add(command);
             }
