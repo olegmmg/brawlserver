@@ -1,6 +1,6 @@
-using System.Net.Sockets;
 using BSL.v41.Logic.Config;
-using BSL.v41.Titan.Mathematical.Data;
+using BSL.v41.Logic.Environment.LaserMessage.Sepo.Home.Laser.Laser;
+using System.Net.Sockets;
 using BSL.v41.General.Cloud;
 using BSL.v41.General.GHelp;
 using BSL.v41.General.NetIsland.LaserBattle;
@@ -17,6 +17,7 @@ using BSL.v41.Logic.Environment.LaserMessage.Laser.Node_27;
 using BSL.v41.Logic.Environment.LaserMessage.Laser.Node_4;
 using BSL.v41.Logic.Environment.LaserMessage.Laser.Node_9;
 using BSL.v41.Logic.Environment.LaserMessage.Sepo.Alliance;
+using BSL.v41.Logic.Environment.LaserMessage.Sepo.Home.Laser.Laser;
 using BSL.v41.Logic.Environment.LaserMessage.Sepo.Mode;
 using BSL.v41.Logic.Environment.LaserMessage.Sepo.Player;
 using BSL.v41.Logic.Environment.LaserNotification;
@@ -24,6 +25,7 @@ using BSL.v41.Logic.Environment.LaserNotification.Laser;
 using BSL.v41.StaticService.Laser;
 using BSL.v41.Supercell.Titan.CommonUtils;
 using BSL.v41.Supercell.Titan.CommonUtils.Utils;
+using BSL.v41.Titan.Mathematical.Data;
 using BSL.v41.Titan.Utilities;
 using BSL.v41.Tools.LaserCsv;
 using BSL.v41.Tools.LaserCsv.Manufacturer.Laser;
@@ -1098,15 +1100,10 @@ public class MessageManager(
                 };
 
                 result.Add(new LogicOfferBundle(
-                    gemOffers,
-                    offer.Title,
-                    offer.Background,
-                    priceType,
-                    offer.Price,
+                    gemOffers, offer.Title, offer.Background,
+                    priceType, offer.Price,
                     offer.OldPrice > 0 ? offer.OldPrice : offer.Price,
-                    endTime,
-                    offer.IsDaily,
-                    offer.ConfirmPurchase));
+                    endTime, offer.IsDaily, offer.ConfirmPurchase));
             }
         }
         catch (Exception e)
