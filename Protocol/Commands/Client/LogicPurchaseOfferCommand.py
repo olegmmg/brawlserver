@@ -1,5 +1,4 @@
 from ByteStream.Reader import Reader
-from Logic.Home.LogicShopData import LogicShopData
 from Protocol.Messages.Server.AvailableServerCommandMessage import AvailableServerCommandMessage
 
 class LogicPurchaseOfferCommand(Reader):
@@ -28,7 +27,7 @@ class LogicPurchaseOfferCommand(Reader):
 
 
             self.player.delivery_items = {
-                'Count': 1,
+                'Count': 10,
                 'Type': 0,
                 'Items': []
             }

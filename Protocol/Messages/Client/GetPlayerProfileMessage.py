@@ -9,9 +9,8 @@ class GetPlayerProfileMessage(Reader):
         self.client = client
 
     def decode(self):
-        self.account_id = self.readLong()
+        pass
+
 
     def process(self, db):
-        account_data = db.load_player_account_by_id(self.account_id)
-
-        PlayerProfileMessage(self.client, self.player, account_data, db).send()
+        PlayerProfileMessage(self.client, self.player).send()

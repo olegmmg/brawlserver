@@ -1,5 +1,4 @@
 from ByteStream.Writer import Writer
-from Logic.Home.LogicBoxData import LogicBoxData
 
 class LogicGiveDeliveryItemsCommand(Writer):
 
@@ -24,6 +23,7 @@ class LogicGiveDeliveryItemsCommand(Writer):
                 self.writeVInt(x['Amount'])
                 self.writeDataReference(x['DataRef'][0], x['DataRef'][1])
                 self.writeVInt(x['Value'])
+                self.writeDataReference(0, 0)
                 self.writeDataReference(0, 0)
                 self.writeDataReference(0, 0)
                 self.writeVInt(0)

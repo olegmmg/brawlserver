@@ -1,0 +1,22 @@
+{
+    "0": {
+        "ID": [10, 0, 0],
+        "ItemType": 0,
+        "Amount": 0,
+        "Text": "@Wat1rX",
+        "CsvID": [0, 0, 0],
+        "SkinID": 0,
+        "Currency": 0,
+        "Cost": 0,
+        "OldPrice": 0,
+        "Multiplier": [150, 0, 0],
+        "Time": 86400,
+        "Background": "offer_velocirapids",
+        "TypeBenefit": 0,
+        "Benefit": 0,
+        "Claim": true,
+        "DailyOffer": true,
+        "Processed": false,
+        "Claimed": false
+    }
+}

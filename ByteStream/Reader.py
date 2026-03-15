@@ -81,7 +81,7 @@ class Reader(BufferedReader):
             try:
                 decoded = self.read(length)
             except MemoryError:
-                raise IndexError("String out of range!")
+                raise IndexError("[*] String out of range!")
             else:
                 return decoded.decode('utf-8')
 

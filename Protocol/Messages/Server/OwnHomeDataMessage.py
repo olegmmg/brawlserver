@@ -17,4 +17,3 @@ class OwnHomeDataMessage(Writer):
         LogicClientAvatar.encode(self)
 
         self.writeVInt(self.time_stamp)
-

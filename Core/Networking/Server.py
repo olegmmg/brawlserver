@@ -2,7 +2,6 @@ import json
 import socket
 from Utils.Helpers import Helpers
 from Core.Networking.ClientThread import ClientThread
-from Protocol.Messages.Server.LoginFailedMessage import LoginFailedMessage
 from Core.Matchmaking import MatchmakingManager
 
 def _(*args):
@@ -15,6 +14,7 @@ class Server:
 
     def __init__(self, ip: str, port: int):
         self.config = json.loads(open('config.json', 'r').read())
+        self.db = None
         self.server = socket.socket()
         self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.port = port
@@ -23,11 +23,11 @@ class Server:
     def start(self):
         self.server.bind((self.ip, self.port))
         MatchmakingManager.start_loop()
-        _(f'{Helpers.green}[*] Project_Magnet server started on {self.ip}:{self.port}')
+        _(f'[*] Project_Magnet server started on {self.ip}:{self.port}')
 
         while True:
             self.server.listen()
             client, address = self.server.accept()
-            _(f'{Helpers.green}[*] Client connected: {address[0]}')
-            ClientThread(client, address).start()
+            _(f'[*] Client connected: {address[0]}')
+            ClientThread(client, address, self.db).start()
             Helpers.connected_clients['ClientsCount'] += 1

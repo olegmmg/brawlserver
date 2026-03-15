@@ -1,6 +1,6 @@
 from ByteStream.Reader import Reader
 from Protocol.Messages.Server.LeaderboardMessage import LeaderboardMessage
-
+from Protocol.Messages.Server.LeaderboardClubMessage import LeaderboardClubMessage
 
 class GetLeaderboardMessage(Reader):
     def __init__(self, client, player, initial_bytes):
@@ -15,16 +15,5 @@ class GetLeaderboardMessage(Reader):
 
 
     def process(self, db):
-        if  self.type == 1:
-            self.player.leaderboard_type = 1
-            players = db.load_all_players_sorted({}, 'Trophies')
-            players.reverse()
-
-            LeaderboardMessage(self.client, self.player, players).send()
-
-        elif self.type == 2:
-            self.player.leaderboard_type = 2
-            clubs = db.load_all_clubs_sorted({}, 'Trophies')
-            clubs.reverse()
-
-            LeaderboardMessage(self.client, self.player, clubs).send()
+        LeaderboardMessage(self.client, self.player).send()
+        LeaderboardClubMessage(self.client, self.player).send()

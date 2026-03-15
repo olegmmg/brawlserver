@@ -1,66 +1,101 @@
 from ByteStream.Reader import Reader
-from Utils.Helpers import Helpers
 from Protocol.Messages.Server.LoginOkMessage import LoginOkMessage
-from Protocol.Messages.Server.LoginFailedMessage import LoginFailedMessage
 from Protocol.Messages.Server.OwnHomeDataMessage import OwnHomeDataMessage
-from Protocol.Messages.Server.MyAllianceMessage import MyAllianceMessage
-from Protocol.Messages.Server.AllianceStreamMessage import AllianceStreamMessage
+#Aliance
+from Protocol.Messages.Server.Aliance.AllianceDataMessage import AllianceDataMessage
+from Protocol.Messages.Server.Aliance.MyAllianceMessage import MyAllianceMessage
+from Protocol.Messages.Server.Aliance.AllianceStreamMessage import AllianceStreamMessage
+#Lobby
+from Lobby.MaintenceMessage import MaintenceMessage
+from Lobby.WarMessage import WarMessage
+#Friend
+from Protocol.Messages.Server.Friends.FriendMessage import FriendMessage
 
+# Database
+try:
+    from Database.DatabaseManager import DB as DataBase
+except ImportError:
+    class DataBase:
+        def __init__(self):
+            pass
+        def load_player_account(self, id, token):
+            return {'Name': '', 'NameSet': False, 'Trophies': 0, 'Gems': 0}
+        def set_player_name(self, token, name):
+            print(f"Would set name: {name}")
+        def load_all_players(self, args):
+            return []
 
 class LoginMessage(Reader):
     def __init__(self, client, player, initial_bytes):
         super().__init__(initial_bytes)
         self.player = player
         self.client = client
-        self.helpers = Helpers()
+        self.db = DataBase()
 
     def decode(self):
+        pass
 
-        self.account_id    = self.readLong()
-        self.account_token = self.readString()
-        self.game_major    = self.readInt()
-        self.game_minor    = self.readInt()
-        self.game_build    = self.readInt()
+    def process(self):
+        try:
+            # Загружаем данные игрока
+            player_data = self.db.load_player_account(self.player.ID, self.player.token)
+            
+            # Проверяем, установлено ли имя
+            if not player_data or not player_data.get('Name') or player_data['Name'] == '' or not player_data.get('NameSet', False):
+                # Автогенерация имени: Player 1, Player 2, etc.
+                all_players = self.db.load_all_players(None)
+                player_number = len(all_players) + 1
+                generated_name = f"Player {player_number}"
+                
+                # Сохраняем сгенерированное имя
+                self.db.set_player_name(self.player.token, generated_name)
+                player_data = self.db.load_player_account(self.player.ID, self.player.token)
+                print(f"[Login] Auto-generated name: {generated_name}")
+            
+            # Обновляем данные игрока в объекте player
+            self._update_player_data(player_data)
+            # Завершаем вход
+            self._complete_login(player_data)
+                
+        except Exception as e:
+            print(f"Login error: {e}")
+            self._send_basic_packets()
 
-        self.fingerprint_sha = self.readString()
+    def _update_player_data(self, player_data):
+        if player_data:
+            self.player.name = player_data.get('Name', self.player.name)
+            self.player.trophies = player_data.get('Trophies', self.player.trophies)
+            self.player.high_trophies = player_data.get('HighestTrophies', self.player.high_trophies)
+            self.player.gems = player_data.get('Gems', self.player.gems)
+            self.player.exp_points = player_data.get('ExperiencePoints', self.player.exp_points)
 
+    def _complete_login(self, player_data):
+        self._update_player_data(player_data)
+        self._send_all_packets()
 
-    def process(self, db):
+    def _send_basic_packets(self):
+        try:
+            LoginOkMessage(self.client, self.player).send()
+            OwnHomeDataMessage(self.client, self.player).send()
+        except Exception as e:
+            print(f"Error sending basic packets: {e}")
 
-        if self.player.maintenance:
-            self.player.err_code = 10
-            LoginFailedMessage(self.client, self.player, '').send()
-
-        if self.fingerprint_sha != self.player.patch_sha and self.player.patch:
-            self.player.err_code = 7
-            LoginFailedMessage(self.client, self.player, "").send()
-
-        if self.account_id == 0:
-            self.player.ID    = self.helpers.randomID()
-            self.player.token = self.helpers.randomToken()
-            db.create_player_account(self.player.ID, self.player.token)
-
-        else:
-            self.player.ID = self.account_id
-            self.player.token = self.account_token
-
-            player_data = db.load_player_account(self.player.ID, self.player.token)
-
-            if player_data:
-                Helpers.load_account(self, player_data)
-                club_data = db.load_club(self.player.club_id)
-                Helpers.load_club(self, club_data)
-            else:
-                self.player.err_code = 1
-                LoginFailedMessage(self.client, self.player, "Account not found in database!\nPlease clear app data.").send()
-
-
-        LoginOkMessage(self.client, self.player, self.player.ID, self.player.token).send()
-        OwnHomeDataMessage(self.client, self.player).send()
-
-        if self.player.club_id != 0:
-            club_data = db.load_club(self.player.club_id)
-            MyAllianceMessage(self.client, self.player, club_data).send()
-            AllianceStreamMessage(self.client, self.player, club_data['Messages']).send()
-
-
+    def _send_all_packets(self):
+        try:
+            LoginOkMessage(self.client, self.player).send()
+            OwnHomeDataMessage(self.client, self.player).send()
+            
+            # Aliance
+            AllianceDataMessage(self.client, self.player, self.db).send()
+            MyAllianceMessage(self.client, self.player, self.db).send()
+            AllianceStreamMessage(self.client, self.player, self.db).send()
+            
+            # Lobby
+            FriendMessage(self.client, self.player).send()
+            WarMessage(self.client, self.player).send()
+            
+            print(f"[Login] Player {self.player.name} logged in successfully")
+            
+        except Exception as e:
+            print(f"Error sending login packets: {e}")
+            self._send_basic_packets()

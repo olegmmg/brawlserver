@@ -1,5 +1,5 @@
 from ByteStream.Reader import Reader
-from Protocol.Messages.Server.BattleEndMessage import BattleEndMessage
+from Protocol.Messages.Server.Battle.BattleEndMessage import BattleEndMessage
 
 class AskForBattleEndMessage(Reader):
     def __init__(self, client, player, initial_bytes):
@@ -37,12 +37,6 @@ class AskForBattleEndMessage(Reader):
 
         BattleEndMessage(self.client, self.player, self.type, self.result, self.players).send()
 
-        trophies = 134
-        self.player.trophies += trophies
-        self.player.high_trophies += trophies
-        self.player.brawlers_trophies[str(self.player.home_brawler)] += trophies
-        self.player.brawlers_high_trophies[str(self.player.home_brawler)] += trophies
-        db.update_player_account(self.player.token, 'Trophies', self.player.trophies)
-        db.update_player_account(self.player.token, 'HighestTrophies', self.player.high_trophies)
-        db.update_player_account(self.player.token, 'BrawlersTrophies', self.player.brawlers_trophies)
-        db.update_player_account(self.player.token, 'BrawlersHighestTrophies', self.player.brawlers_high_trophies)
+
+
+

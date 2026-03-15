@@ -1,61 +1,69 @@
 from ByteStream.Writer import Writer
-from Files.CsvLogic.Regions import Regions
-from Logic.Avatar.LogicPlayerStats import LogicPlayerStats
 
 
 class PlayerProfileMessage(Writer):
 
-    def __init__(self, client, player, player_data, db):
+    def __init__(self, client, player):
         super().__init__(client)
         self.id = 24113
         self.player = player
-        self.player_data = player_data
-        self.db = db
 
     def encode(self):
-        self.writeLogicLong(self.player_data['ID'])
+        self.writeVInt(0)#High ID
+        self.writeVInt(1)#Low ID
 
-        self.writeDataReference(0, 0)
+        self.writeVInt(0)#?
 
-        self.writeVInt(len(self.player_data['UnlockedBrawlers']))
-        for x in self.player_data['UnlockedBrawlers']:
-            # HeroEntry::encode
-            self.writeDataReference(16, x)
-            self.writeDataReference(0, 0)
-            self.writeVInt(0)
-            self.writeVInt(0)
-            self.writeVInt(10)
+        self.writeVInt(1)
+        self.writeScId(16, 0)
+        self.writeVInt(0)
+        self.writeVInt(1250)  # Trophies for rank
+        self.writeVInt(1250)  # Trophies
+        self.writeVInt(9)  # power lvl
 
-        self.playerStats = LogicPlayerStats.getPlayerStats(self, self.player_data)
+        self.writeVInt(6)#Count Array
 
-        self.writeVInt(len(self.playerStats))
-        for x in self.playerStats:
-            self.writeVInt(list(self.playerStats.keys()).index(x) + 1)
-            self.writeVInt(self.playerStats[x])
+        self.writeVInt(4)  # ID
+        self.writeVInt(self.player.high_trophies)  # Highest Trophies
+        
+        self.writeVInt(3)  # ID
+        self.writeVInt(self.player.trophies)  # Trophies
+        
+        self.writeVInt(5)  # ID
+        self.writeVInt(1)  # Brawlers List
+        
+        self.writeVInt(15)  # ID
+        self.writeVInt(15)  # Challenge Wins
+        
+        self.writeVInt(17)  # ID
+        self.writeVInt(19)  # Power League Rank  Team
+        
+        self.writeVInt(18)  # ID
+        self.writeVInt(19)  # Power League Rank Team
 
-        # PlayerDisplayData::encode
-        self.writeString(self.player_data['Name'])
-        self.writeVInt(100) # Unknown
-        self.writeVInt(28000000 + self.player_data['ProfileIcon'])
-        self.writeVInt(43000000 + self.player_data['NameColor'])
+        # sub_64DF74
+        self.writeString(f"{self.player.name}")
+        self.writeVInt(100)
+        self.writeVInt(28000000 + self.player.profile_icon)#Icon
+        self.writeVInt(43000000 + self.player.name_color)#Name Color
+        self.writeVInt(46000000)
+        
+        self.writeBoolean(True)  # Is in club
 
-        if self.player_data['ClubID'] != 0:
-            club_data = self.db.load_club(self.player_data['ClubID'])
-
-            self.writeBoolean(True)
-            self.writeLong(club_data['ID'])
-            self.writeString(club_data['Name'])
-            self.writeDataReference(8, club_data['BadgeID'])
-            self.writeVInt(club_data['Type'])
-            self.writeVInt(len(club_data['Members']))
-            self.writeVInt(club_data['Trophies'])
-            self.writeVInt(club_data['RequiredTrophies'])
-            self.writeDataReference(0, 0)
-            self.writeString(Regions().get_region_string(club_data['Region']))
-            self.writeVInt(0)
-            self.writeUInt8(0)
-            self.writeDataReference(25, self.player_data['ClubRole'])
-
-        else:
-            self.writeBoolean(False)
-            self.writeVInt(0)
+        self.writeInt(0)
+        self.writeInt(1)
+        self.writeString("Brawl Stars")  # club name
+        self.writeVInt(8)
+        self.writeVInt(2)  # Club badgeID
+        self.writeVInt(1)  # club type | 1 = Open, 2 = invite only, 3 = closed
+        self.writeVInt(1)  # Current members count
+        self.writeVInt(0)
+        self.writeVInt(0)  # Trophy required
+        self.writeVInt(0)  # (Unknown)
+        self.writeString("RU")  # region
+        self.writeVInt(0)  # (Unknown)
+        self.writeVInt(0)  # (Unknown)
+        self.writeVInt(25)
+        self.writeVInt(2)
+        self.writeVInt(0)
+        self.writeVInt(0)

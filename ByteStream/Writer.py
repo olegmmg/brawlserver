@@ -55,9 +55,13 @@ class Writer:
             self.writeInt16(self.version)
         else:
             self.writeInt16(0)
-        self.buffer += packet + b'\xff\xff\x00\x00\x00\x00\x00'
+
+        if self.id == 20100:
+            self.buffer += packet
+        else:
+            self.buffer += packet + b'\xff\xff\x00\x00\x00\x00\x00'
         self.client.send(self.buffer)
-        print(f'{Helpers.yellow}[SERVER] PacketID: {self.id}, Name: {type(self).__name__}, Length: {len(self.buffer)}')
+        print(f'[*] PacketID: {self.id}, Name: {type(self).__name__}, Length: {len(self.buffer)}')
 
 
     def sendByID(self, ID):
@@ -80,7 +84,7 @@ class Writer:
         if data == 0:
             self.writeByte(0)
         elif data < 0:
-            self.writeVInt((2147483648 * 2) + data)
+            self.writeVint((2147483648 * 2) + data)
         else:
             data = (data << 1) ^ (data >> 31)
             while data:
@@ -147,3 +151,5 @@ class Writer:
 
     writeBoolean = writeBool
     writeInt32   = writeInt
+    writeVint = writeVInt
+    writeScId = writeDataReference
