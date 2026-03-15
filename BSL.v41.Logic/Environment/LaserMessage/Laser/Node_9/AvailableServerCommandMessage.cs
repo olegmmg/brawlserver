@@ -17,7 +17,7 @@ public class AvailableServerCommandMessage : PiranhaMessage
     {
         base.Encode();
 
-        BSL.v41.Logic.Logic.LogicCommandManager.EncodeCommand(_logicCommand, ByteStream);
+        LogicCommandManager.EncodeCommand(_logicCommand, ByteStream);
     }
 
     public void SetServerCommand(LogicCommand logicCommand)

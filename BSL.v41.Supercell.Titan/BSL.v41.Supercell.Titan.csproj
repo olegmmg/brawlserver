@@ -8,10 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\BSL.v41.Custom.Stream\BSL.v41.Custom.Stream.csproj"/>
-        <ProjectReference Include="..\BSL.v41.Supercell.Titan\BSL.v41.Supercell.Titan.csproj"/>
         <ProjectReference Include="..\BSL.v41.Titan\BSL.v41.Titan.csproj"/>
-        <ProjectReference Include="..\BSL.v41.Tools\BSL.v41.Tools.csproj"/>
     </ItemGroup>
 
 </Project>

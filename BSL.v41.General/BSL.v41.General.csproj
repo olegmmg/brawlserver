@@ -16,6 +16,7 @@
         <ProjectReference Include="..\BSL.v41.Tools\BSL.v41.Tools.csproj"/>
     </ItemGroup>
 
+
     <ItemGroup>
         <None Update="..\brawlpass.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

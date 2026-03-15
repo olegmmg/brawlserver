@@ -17,17 +17,13 @@ public static class Program
 ");
         ConsoleLogger.WriteTextWithPrefix(ConsoleLogger.Prefixes.Cmd, "Project_Magnet starting...");
 
-        // Start hot-reload watchers for configs
         BrawlPassConfig.StartWatcher("brawlpass.json");
         ShopConfig.StartWatcher("shop.json");
         ConsoleLogger.WriteTextWithPrefix(ConsoleLogger.Prefixes.Cmd,
-            $"BrawlPass season {BrawlPassConfig.Instance.SeasonId} loaded. " +
-            $"Pass: {BrawlPassConfig.Instance.PassPriceGems} gems, " +
-            $"Pass+: {BrawlPassConfig.Instance.PassPlusPriceGems} gems.");
+            $"BrawlPass season {BrawlPassConfig.Instance.SeasonId} | Pass: {BrawlPassConfig.Instance.PassPriceGems}g | Pass+: {BrawlPassConfig.Instance.PassPlusPriceGems}g");
         ConsoleLogger.WriteTextWithPrefix(ConsoleLogger.Prefixes.Cmd,
-            $"Shop loaded: {ShopConfig.Data.Offers.Count} offers.");
+            $"Shop: {ShopConfig.Data.Offers.Count} offers loaded");
 
-        // Telegram Bot
         var telegramToken = Environment.GetEnvironmentVariable("TELEGRAM_TOKEN");
         var adminId = Environment.GetEnvironmentVariable("ADMIN_ID");
         if (!string.IsNullOrEmpty(telegramToken))
