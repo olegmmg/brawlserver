@@ -17,7 +17,6 @@ using BSL.v41.Logic.Environment.LaserMessage.Laser.Node_27;
 using BSL.v41.Logic.Environment.LaserMessage.Laser.Node_4;
 using BSL.v41.Logic.Environment.LaserMessage.Laser.Node_9;
 using BSL.v41.Logic.Environment.LaserMessage.Sepo.Alliance;
-using BSL.v41.Logic.Environment.LaserMessage.Sepo.Home.Laser.Laser;
 using BSL.v41.Logic.Environment.LaserMessage.Sepo.Mode;
 using BSL.v41.Logic.Environment.LaserMessage.Sepo.Player;
 using BSL.v41.Logic.Environment.LaserNotification;
@@ -1083,8 +1082,8 @@ public class MessageManager(
                         "Gold"        => ShopItemHelperTable.Coin,
                         "BigBox"      => ShopItemHelperTable.BigBox,
                         "MegaBox"     => ShopItemHelperTable.MegaBox,
-                        "Gems"        => ShopItemHelperTable.Diamond,
-                        "PowerPoints" => ShopItemHelperTable.PowerPoint,
+                        "Gems"        => ShopItemHelperTable.Gems,
+                        "PowerPoints" => ShopItemHelperTable.HeroPower,
                         "Skin"        => ShopItemHelperTable.Skin,
                         _             => ShopItemHelperTable.BrawlBox
                     };
@@ -1095,8 +1094,8 @@ public class MessageManager(
 
                 var priceType = offer.PriceType switch
                 {
-                    "Gold" => ShopPriceTypeHelperTable.Coin,
-                    _      => ShopPriceTypeHelperTable.Diamond
+                    "Gold" => ShopPriceTypeHelperTable.ByGold,
+                    _      => ShopPriceTypeHelperTable.ByGems
                 };
 
                 result.Add(new LogicOfferBundle(

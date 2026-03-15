@@ -9,8 +9,14 @@
       "is_daily": true,
       "confirm_purchase": false,
       "items": [
-        {"type": "Gold", "amount": 1000},
-        {"type": "BigBox", "amount": 3}
+        {
+          "type": "Gold",
+          "amount": 1000
+        },
+        {
+          "type": "BigBox",
+          "amount": 3
+        }
       ]
     },
     {
@@ -22,7 +28,10 @@
       "is_daily": false,
       "confirm_purchase": false,
       "items": [
-        {"type": "Gold", "amount": 500}
+        {
+          "type": "Gold",
+          "amount": 500
+        }
       ]
     },
     {
@@ -34,8 +43,14 @@
       "is_daily": true,
       "confirm_purchase": false,
       "items": [
-        {"type": "MegaBox", "amount": 3},
-        {"type": "PowerPoints", "amount": 200}
+        {
+          "type": "MegaBox",
+          "amount": 3
+        },
+        {
+          "type": "PowerPoints",
+          "amount": 200
+        }
       ]
     }
   ]
